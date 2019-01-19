@@ -1,0 +1,171 @@
+第一章 Hello World
+
+    1.FrameRate类在整本书中用来度量应用程序的速度。
+    2.HelloWorldApp是第一个游戏窗口示例，但是它使用被动渲染来更新显示。
+    3.RenderThreadExample是一个简单的示例，它使用线程来创建一个定制的游戏循环。
+    4.ActiveRenderingExample是一个主动渲染游戏窗口，带有一个定制的游戏循环线程。
+    5.DisplayModeExample允许玩家切换到全屏显示模式。这也是使用Swing组件的第一个示例。
+    6.FullScreenRenderingExample组合了主动渲染并且修改了显示模式，以创建一个全屏游戏窗口。
+
+第二章 输入
+
+    1.SimpleKeyboardInput和SimpleKeyboardExample类展示了在游戏循环中轮询键盘。
+    2.KeyboardInput通过添加了keyDown()和keyDownOnce()方法改进了示例。
+    3.SimpleMouseInput和SimpleMouseExample类是第一个以轮询键盘相同的方式来轮询鼠标的示例。
+    4.RelativeMouseInput和RelativeMouseExample类添加并展示了避免鼠标光标离开游戏窗口的功能，添加了相对鼠标移动。
+
+第三章 变换
+
+    1.介绍了Vector2f类。在VectorGraphicsExample中使用该类，说明了简单平移，旋转和切变。
+    2.PolarCoordinateExample在笛卡尔坐标系和极坐标系之间来回转换。
+    3.介绍了Matrix3x3f类，和MatrixMultiplicationExample示例一起使用，它让行星围绕太阳旋转。
+
+第四章 时间和空间
+
+    1.TimeDeltaExample展示了给游戏添加计时，从而可以独立于帧速率来执行动画。
+    2.ScreenMappingExample类使用标准化的设备坐标，并且使用变换将这些值映射到屏幕上。
+    3.ViewportRatioExample类维护了世界高宽比，并且将视口在游戏窗口中居中。
+    4.CannonExample类使用计时和世界坐标来实现物理和重力，以模拟大炮和炮弹。
+
+第五章 简单游戏框架
+
+    1.Javagames.util包中添加了Utility类。这个类在整本书后续的内容中通过辅助方法来更新。
+    2.引入了SimpleFramework类。这个类将所有通用的代码包含到一个框架中，该框架可以用来简化本书中的其他示例。
+    3.SimpleFrameworkTemplate类是一个示例，展示了使用框架作为未来游戏示例的起点。
+
+第六章 Vector2f更新
+
+    1.inv（）：计算相反的向量。
+    2.add（）：两个向量相加。
+    3.sub（）：两个向量相减。
+    4.mul（）：一个向量和一个标量相乘。
+    5.div（）：一个向量除以一个标量。
+    6.perp（）：计算一个向量的垂直向量。
+    7.dot（）：计算两个向量的点积。
+    8.angle（）：返回向量所创建的角度，（ -PI到PI ）。
+    9.polar（）：将一个极坐标角度转换为一个向量。
+    10.toString（）：将向量转换为一个“（x，y）”字符串。
+
+第七章 相交测试
+
+    1.PointInPolygonExample类展示了测试多边形中的点的算法，并且这是使用SimpleFramework代码的第一个示例。
+    2.OverlapExample类展示了AABB和圆的相交测试，以及测试鼠标看它是否在图形之中。
+    3.LineLineOverlapExample类使用分割轴测试来检测两条线何时重叠。
+    4.RectRectOverlapExample类使用分割轴测试来检测两个矩形何时重叠。
+
+第八章 游戏原型
+
+    1.PolygonWrapper类将游戏多边形从游戏窗口的一端向另一端折返，并且ScreenWrapExample测试了这一新的代码。
+    2.PrototypeAsteroid类表示在游戏中飞行的陨石。
+    3.PrototypeEditor类是第一个使用Swing来创建游戏工具的示例。
+    4.PrototypeAsteroidFactory类在运行时创建随机的陨石，并且RandomAsteroidExample展示了如何使用这一工厂。
+    5.PrototypeBullet，PrototypeShip和FlyingShipExample类测试飞船的飞行和射击。
+    6.PrototypeGame扩展了SimpleFramework，并且使用目前的所有内容来创建一款原型游戏。
+
+第九章 文件和资源
+
+    1.FilesAndDirectories示例展示了遍历一个文件树。
+    2.ReadingDataFromFiles和WritingDataToFiles类展示了基本的文件I/O。
+    3.ClasspathResources展示了在运行时加载资源的不同方式。
+    4.ResourceLoader和ResourceLoaderExample类向utility包添加了辅助类并且展示了其用法。
+    5.PrintSystemProperties示例列举了所有的Java系统属性。
+    6.SavingPropertyFiles和PropertyFileExample类给出了使用Java属性的示例。
+    7.SaveXMLExample和LoadXMLExample类展示了使用XML文件。
+    8.XMLUtility类添加到了utility工具包中，以辅助解析XML文档。
+
+第十章 图像
+
+    1.ImageCreatorExample类以*.GIF，*.BMP，*.JPG和*.PNG格式将文件保存到硬盘并加载它们。
+    2.ColorInterpolationExample类展示了颜色的线性插值，以及如何访问一个图像的原始像素值。
+    3.ImageSpeedTest类展示了如何使用VolatileImage来增加渲染速度。
+    4.TransparentImageExample类展示了创建带有透明背景的一幅图像的代码。
+    5.AlphaCompositeExample类展示了不同的alpha混合模式。
+    6.FlyingSpritesExample类展示了如何用不同的配置选项绘制精灵，以控制速度和质量。
+    7.ScaleImageExample和ScaleUpImageExample类展示了为了追求速度和质量而缩放图像的各种方式。
+
+第十一章 文本
+
+    1.BoxedTextProblem和BoxedTextSolution展示了如何计算运行时的字体大小。
+    2.UtilityDrawStringExample展示了如何把更新加入到Utility类中以绘制字符串。
+    3.TextMetricExample展示了字体可用的所有不同属性。
+    4.TextLayoutExample展示了在一个复古样式的高分示例程序中如何布局字母。
+    5.ConsoleOverlayExample将文本渲染和透明度结合起来，以创建一个文本控制台重叠。
+    6.SafeKeyboardInput类添加到util包中，以处理键录入以避免遗漏。SafeKeyboardInputExample展示了这一更新的使用。
+
+第十二章 线程
+
+    1.CallableTaskExample介绍了如何使用一个线程池。FileLoadingExample使用一个线程池来模拟在启动时加载资源。
+    2.创建FakeHardware，FakeHardwareListener和FakeHardwareEvent以允许用你所控制的类来探索线程。
+    3.WaitNotifyExample展示了使用wait()和notify()方法来挂起和继续线程。
+    4.BlockingHardware和BlockingHardwareListener展示了用一个阻塞类包装一个非阻塞类。
+    5.BlockingQueueExample展示了如何在线程之间传递信息。
+    6.OneShotEvent，LoopEvent和RestartEvent展示了如何在状态机中使用BlockingHardware类。
+    7.MultiThreadEventExample展示了如何在游戏循环中使用状态机。
+
+第十三章 声音
+
+    1.PlayingClipsExample探讨了在Java中支持声音遇到的一些问题。
+    2.AudioStream，BlockingAudioListener和SoundException构成了定制的声音库的基类。
+    3.BlockingClip类用一个阻塞类包装了一个Clip对象，这个类可以在游戏代码中使用。
+    4.AudioDataLine和BlockingDataLine创建了用于流播放声音的一个数据行的一个阻塞版本。
+    5.SoundEvent使用一个阻塞队列，以便可以在游戏循环中使用声音库。
+    6.OneShotEvent，LoopEvent和RestartEvent创建了状态机，用于提供基本的声音功能。
+    7.SoundPlayerExample展示了在游戏循环中使用声音。
+    8.SoundControlsExample使用了声音库的更新，以便各类添加平衡和音量控制，并且展示其用法。
+
+第十四章 用ANT进行开发
+
+    1.common.xml文件是可扩展脚本的一个示例，它可以定制化以便为用户编译，打包和部署游戏代码。
+    2.CustomBuild.xml文件是针对一款具体游戏扩展common.xml文件的一个示例。
+
+第十五章 碰撞检测
+
+    1.BouncingBallsExample创建了随机的球，它可以在屏幕上来回弹跳。
+    2.LineRectIntersectionExample在屏幕中间放置了一个旋转的矩形，并且计算一条直线和一个矩形相交。
+    3.CircleLineIntersectionExample展示了如何计算一个圆和一条直线的相交。
+    4.LineLineIntersectionExample计算两条线段的具体交点。
+    5.ReflectionVectorExample计算一条线段的反射向量。
+    6.BouncyPointExample围绕一个封闭的多边形弹回随机的点。
+
+第十六章 工具
+
+    1.GameFramework，WindowFramework，FullScreenFramework和SwingFramework展示了游戏代码的一个更为通用的框架。
+    2.用更多的String渲染来更新Utility类，并且添加了缩放图像的代码。
+    3.PolygonEditor和ExampleFileFilter一起使用，以创建一个较好的多边形编辑器，它可以保存和加载文件。
+    4.Sprite类添加到了util包中，以更容易地在游戏中绘制精灵。SpriteExample展示了Sprite的使用。
+    5.TestParticle的ParticleExample探索了一个简单的粒子引擎。
+
+第十七章 太空火箭
+
+    游戏对象包括以下内容：
+        1.Bullet：飞船发射的子弹。
+        2.PolygonWrapper：包装对象的工具类。
+        3.Particle：一个单个的粒子实体。
+        4.Asteroid：一个太空陨石。
+        5.AsteroidFactory：创建随机的太空陨石。
+        6.AsteroidExplosion：使用粒子来创建随机爆炸。
+        7.Ship：表示一个飞行的飞船对象。
+        8.ShipFactory：创建新的飞船对象。
+        9.ShipExplosion：当飞船销毁的时候，飞船爆炸。
+    管理类如下：
+        1.GameConstants：所有的游戏常量在一个类中。
+        2.Acme：没有寄存类的辅助方法。
+        3.QuickLooper：只加载声音一次。
+        4.QuickRestart：只加载声音一次。
+        5.HighScoreMgr：处理高分文件。
+    游戏状态类如下：
+        1.GameState：记录当前关卡，分数和命。
+        2.Score：用一个Comparable<>对象来排序得分。
+        3.State：用于状态机的状态管理的基类。
+        4.StateController：整个游戏的关键类。
+    完整的游戏类如下：
+        1.CompleteGame：带有main（）方法的游戏框架。
+        2.GameLoading：加载资源的游戏状态。
+        3.AttractState：用于各种观赏屏幕的基类。
+        4.PressSpaceToPlay：按下空格开始游戏。
+        5.HighScore：显示最高的10ge得分。
+        6.GameInformationState：显示游戏信息类。
+        7.LevelStarting：显示当前关卡，并且让玩家做好准备。
+        8.LevelPlaying：游戏的实际部分。
+        9.GameOver：游戏结束。
+        10.EnterHighScoreName：让用户为其得分输入名称。

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="hello-world" default="default">
+    <!--
+        < = &lt
+        > = &gt
+        & = &amp
+        " = &quot
+        ' = &apos;
+        project标签：
+            <project name="name" basedir="." default="default">
+            </project>
+            是构建任何脚本的根标签，有一个名称和可选的basedir，以及default目标属性。
+        target标签：
+            <target name="target-name" description="target description"
+                depends="list,separated,with,commas">
+            一个构建脚本包含一个或多个target，这是构建过程中的一个步骤。
+            target包含一个名称，一个说明，以及一个可选的depends属性，
+            这个属性列出了这个target所依赖的所有target的列表，其中各个target用逗号隔开。
+            在一个target运行之前，所有依赖的target都要运行。
+            依赖的target只运行一次，不管引用它们多少次。
+        property标签：
+            <property name="name1" value="value1"/>
+            <property name="name2" location="location/one"/>
+            属性有一个name，以及一个value或一个location。
+            如果使用了location属性，位置会转换为一个文件路径。
+            一旦定义了属性，就不能再覆盖它。
+            不管一个属性被定义了多少次，它都只拥有第一次定义时设置的值。
+            引用属性：${property.name}在运行时展开，成为名称为property.name的属性的值。
+            ANT使用了相同的美元符号，提供了对所有Java系统属性的访问，例：
+                扩展后，${os.name}与System.getProperty("os.name")的值相同。
+        內建属性：
+            basedir：构建脚本的绝对路径，basedir属性在<project>标签中设置。
+            ant.file：构建文件的绝对路径。
+            ant.project.name：project标签的name属性。
+        命令行运行脚本：
+            ant：运行build.xml脚本。
+            ant -f hello.xml：如果脚本不是名为build.xml，使用-f命令通过传递文件名来运行脚本。
+            ant -p：列出项目的帮助信息。显示所有的标记文档以及默认的target。
+            运行特定的target：在-f命令的末尾传入target名称。
+                或者用空格隔开的多个target，则只运行那些非默认的target的target。
+    -->
+    <description>
+        This is a simple Hello World script
+    </description>
+    <target name="default" description="target description">
+        <echo>Hello World!</echo>
+        <echo>This prints out to the console</echo>
+        <delete dir="${basedir}/ant_lib"/>
+        <mkdir dir="${basedir}/ant_lib"/>
+        <delete dir="${basedir}/ant_bin"/>
+        <mkdir dir="${basedir}/ant_bin"/>
+        <copy file="./res/myfile.txt" tofile="./ant_lib/mycopy.txt"/>
+        <copy file="./res/myfile.txt" todir="./ant_lib/some/other/dir"/>
+        <copy todir="./ant_lib/new/dir1">
+            <fileset dir="res"/>
+        </copy>
+        <copy todir="./ant_lib/new/dir2">
+            <fileset dir="res">
+                <!--避免复制某些文件，**表示搜索所有目录和子目录-->
+                <exclude name="**/*.txt"/>
+            </fileset>
+        </copy>
+        <mkdir dir="${basedir}/ant_bin/bin"/>
+        <mkdir dir="${basedir}/ant_bin/src"/>
+        <copy file="./src/Javagames/util/FrameRate.java" todir="./ant_bin/src"/>
+        <!--编译Java代码-->
+        <path id="common.classpath">
+            <pathelement location="${basedir}/ant_bin/bin"/>
+        </path>
+        <javac
+            srcdir="${basedir}/ant_bin/src"
+            destdir="${basedir}/ant_bin/bin"
+            classpathref="common.classpath"
+            debug="on"
+            includeAntRuntime ="false"
+        />
+        <!--创建一个jar文件-->
+        <fileset id="jar.fileset" dir="ant_bin/bin"/>
+        <jar destfile="ant_lib/${ant.project.name}.jar">
+            <fileset refid="jar.fileset"/>
+            <manifest>
+                <attribute name="Main-Class" value="javagames.ant.HelloWorld"/>
+                <attribute name="Class-path"
+                           value="jar1-name jar2-name directory-name/jar3-name"/>
+            </manifest>
+        </jar>
+        <!--标记一个jar文件-->
+        <delete file="signjar.keystore"/>
+        <genkey alias="${ant.project.name}"
+                validity="999999"
+                storepass="storepass"
+                keystore="signjar.keystore">
+            <dname>
+                <param name="CN" value="Tim Wright"/>
+                <param name="OU" value="Groovy Inc."/>
+                <param name="O" value="Planet Earth"/>
+                <param name="C" value="Milkyway"/>
+            </dname>
+        </genkey>
+        <signjar jar="ant_lib/${ant.project.name}.jar"
+                 keystore="signjar.keystore"
+                 alias="${ant.project.name}"
+                 storepass="storepass"/>
+        <delete file="signjar.keystore"/>
+        <!--将文件，文件夹以及其他的ZIP文件添加到一个已经创建的JAR文件中-->
+        <jar update="true" destfile="ant_lib/${ant.project.name}.jar">
+            <fileset dir="src"/>
+            <fileset dir="res"/>
+            <!--<zipfileset src="res/gamelib.jar"/>-->
+        </jar>
+    </target>
+</project>

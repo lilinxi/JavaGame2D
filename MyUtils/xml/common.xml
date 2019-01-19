@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This is the base script used for creating custom build scripts. -->
+<!--
+	创建一个可扩展的脚本，<import file="toInclude.xml"/>
+
+	所包含的脚本的顶层的任何属性都不能被覆盖，因此，确保在包含任何脚本之前先定义属性。
+
+	在通用的构建脚本中，将第三方库定义为属性，可能有帮助：
+		<property name="junit.lib"
+			location="${common.home}/../3rd/JUnit/junit-4.5.jar"/>
+
+	通用脚本中的每一个默认target都划分为两个target。例如：clean target
+		<target name="clean" depends="project-clean">
+			something
+		</target>
+		<target name="project-clean"/>
+		clean target取决于project-clean target，考虑到默认的target将被替代，或者在一个定制的target之前或之后执行。
+
+	target是可以被覆盖的具有相同名称的最后一个target将会被采用，而属性则使用给定的第一个值。
+	如果不同的文件定义了相同的target，使用最后定义的target。可以引用项目的名称common.clean来访问被覆盖的target。
+	如果你需要定制一个target，它在默认的clean target之前或之后运行，有两种方法：
+		1.覆盖默认的clean标签所依赖的<project-clean>
+			<project name="custom" default="clean">
+				<include file="common.xml"/>
+				<target name="project-clean">
+					<echo>Runs before default</echo>
+				</target>
+			</project>
+		2.将默认标签定义为一个覆盖标签的依赖标签，以便定制的标签在通用的标签之后运行
+			<project name="custom">
+				<import file="common.xml"/>
+				<target name="clean" depends="common.clean">
+					<echo>Runs after default</echo>
+				</target>
+			</project>
+	有3个选项，使得我们可以以多种方法来扩展一个脚本：
+		1.替代一个target，用相同的名称创建一个新的target。
+		2.在默认之后定制，使用depends="projectname.target"语法。
+		3.在默认之前定制，覆盖project-target标签。
+
+	使用ANT覆盖属性是不可能的，因此一个简单的技巧是在target中定义默认属性，而不是在构建脚本的开头定义。
+	只要在调用target之前设置了属性，就可以覆盖默认的属性。
+-->
+<project name="common" basedir=".">
+	<dirname property="common.home" file="${ant.file.common}" />
+	<property name="junit.lib" location="${common.home}/../3rd/JUnit/junit-4.5.jar" />
+	<property name="common.bin" value="${basedir}/bin" />
+	<property name="common.lib" value="${basedir}/lib" />
+	<property name="common.docs" value="${basedir}/docs" />
+	<property name="common.test" value="${basedir}/test" />
+	<property name="common.junit" value="${basedir}/junit" />
+	<property name="common.classpath" value="common.classpath" />
+	<property name="common.src" value="${basedir}/src" />
+	<path id="common.classpath">
+		<pathelement location="${common.bin}" />
+	</path>
+	
+	<!-- ================================= 
+	BUILD 
+	================================= -->
+	<target name="build" description="--> Builds the project"
+		depends="project-build, clean, init, compile, jar" />
+	<target name="project-build" />
+	
+	<!-- ================================= 
+	INIT
+	 ================================= -->
+	<target name="init" depends="project-init">
+		<echo>Creating project directory structure...</echo>
+		<mkdir dir="${common.bin}" />
+		<mkdir dir="${common.lib}" />
+		<mkdir dir="${common.docs}" />
+		<mkdir dir="${common.test}" />
+		<mkdir dir="${common.junit}" />
+		<mkdir dir="${common.src}" />
+	</target>
+	<target name="project-init" />
+	
+	<!-- =================================
+	 CLEAN 
+	 ================================= -->
+	<target name="clean" depends="project-clean">
+		<echo>Deleting project directory structure...</echo>
+		<delete dir="${common.bin}" />
+		<delete dir="${common.lib}" />
+		<delete dir="${common.docs}" />
+		<delete dir="${common.junit}" />
+	</target>
+	<target name="project-clean" />
+	
+	<!-- ================================= 
+	COMPILE 
+	================================= -->
+	<target name="compile" depends="project-compile">
+		<property name="compile.srcdir" value="${basedir}/src;${basedir}/test" />
+		<property name="compile.destdir" value="${basedir}/bin" />
+		<property name="compile.debug" value="on" />
+		<property name="compile.classpath" value="${common.classpath}" />
+		<echo>Compiling source code...</echo>
+		<javac srcdir="${compile.srcdir}"
+			   destdir="${compile.destdir}"
+			   classpathref="${compile.classpath}"
+			   debug="${compile.debug}"
+			   includeAntRuntime ="false"/>
+		<!--对于includeAntRuntime属性，官方的解释如下：
+    		是否将Ant运行时库包含在类路径中; 默认为yes，
+    		除非设置了build.sysclasspath。
+    		通常最好将其设置为false，以便脚本的行为对其运行的环境不敏感。-->
+	</target>
+	<target name="project-compile" />
+	
+	<!-- ================================= 
+	JAR 
+	================================= -->
+	<target name="jar" depends="project-jar">
+		<property name="jar.name" value="${ant.project.name}" />
+		<property name="jar.mainclass" value="" />
+		<property name="jar.classpath" value="" />
+		<property name="jar.fileset" value="jar.fileset" />
+		<property name="jar.destfile" value="${common.lib}/${jar.name}.jar" />
+		<fileset id="jar.fileset" dir="${common.bin}">
+			<exclude name="**/Test*.class" />
+			<exclude name="**/*Tests.class" />
+			<exclude name="**/*TestCase.class" />
+		</fileset>
+		<echo>Creating ${common.lib}${file.separator}${jar.name}.jar...</echo>
+		<jar destfile="${jar.destfile}">
+			<fileset refid="${jar.fileset}" />
+			<manifest>
+				<attribute name="Main-Class" value="${jar.mainclass}" />
+				<attribute name="Class-Path" value="${jar.classpath}" />
+			</manifest>
+		</jar>
+	</target>
+	<target name="project-jar" />
+	
+	<!-- ================================= 
+	SIGNJAR 
+	================================= -->
+	<target name="signjar" depends="project-signjar">
+		<property name="signjar.keystore" value="${basedir}/${ant.project.name}.keystore" />
+		<property name="signjar.alias" value="${ant.project.name}" />
+		<property name="signjar.storepass" value="storepass" />
+		<property name="signjar.validity" value="999999" />
+		<property name="signjar.jar" value="${common.lib}/${jar.name}.jar" />
+		<echo>Signing Jar File</echo>
+		<delete file="${signjar.keystore}" />
+		<genkey alias="${signjar.alias}" validity="${signjar.validity}"
+			storepass="${signjar.storepass}" 
+			keystore="${signjar.keystore}">
+			<dname>
+				<param name="CN" value="Tim Wright" />
+				<param name="OU" value="Groovy Inc." />
+				<param name="O" value="Rio Rancho" />
+				<param name="C" value="US" />
+			</dname>
+		</genkey>
+		<signjar jar="${signjar.jar}" keystore="${signjar.keystore}"
+			alias="${signjar.alias}" storepass="${signjar.storepass}" />
+		<delete file="${signjar.keystore}" />
+	</target>
+	<target name="project-signjar" />
+</project>

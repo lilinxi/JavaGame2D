@@ -1,0 +1,129 @@
+package Javagames.prototype;
+
+import Javagames.util.Matrix3x3f;
+import Javagames.util.Utility;
+import Javagames.util.Vector2f;
+
+import java.util.List;
+
+public class PolygonWrapper {
+    //多边形包装类
+    //使用renderList绘制图像，最多需要绘制4个副本
+    //创建一个渲染副本，当物体的一部分超出屏幕时会在屏幕的另一端折返返回
+    private float worldWidth;
+    private float worldHeight;
+    private Vector2f worldMin;
+    private Vector2f worldMax;
+
+    public PolygonWrapper(float worldWidth, float worldHeight) {
+        this.worldWidth = worldWidth;
+        this.worldHeight = worldHeight;
+        worldMax = new Vector2f(worldWidth / 2.0f, worldHeight / 2.0f);
+        worldMin = worldMax.inv();
+    }
+
+    public boolean hasLeftWorld(Vector2f position) {
+        return position.x < worldMin.x || position.x > worldMax.x ||
+                position.y < worldMin.y || position.y > worldMax.y;
+    }
+
+    public Vector2f wrapPosition(Vector2f position) {
+        //对图像的当前位置进行判断，如果超出世界坐标则在另一端折返
+        Vector2f wrapped = new Vector2f(position);
+        if (position.x < worldMin.x) {
+            wrapped.x = position.x + worldWidth;
+        } else if (position.x > worldMax.x) {
+            wrapped.x = position.x - worldWidth;
+        }
+        if (position.y < worldMin.y) {
+            wrapped.y = position.y + worldHeight;
+        } else if (position.y > worldMax.y) {
+            wrapped.y = position.y - worldHeight;
+        }
+        return wrapped;
+    }
+
+    public void wrapPolygon(Vector2f[] poly, List<Vector2f[]> renderList) {
+        //判断4个方向是否越界来判断需要渲染的副本，并添加到renderList
+        Vector2f min = getMin(poly);
+        Vector2f max = getMax(poly);
+        boolean north = max.y > worldMax.y;
+        boolean south = min.y < worldMin.y;
+        boolean east = max.x > worldMax.x;
+        boolean west = min.x < worldMin.x;
+        if (west) {
+            renderList.add(wrapEast(poly));
+        }
+        if (east) {
+            renderList.add(wrapWest(poly));
+        }
+        if (north) {
+            renderList.add(wrapSouth(poly));
+        }
+        if (south) {
+            renderList.add(wrapNorth(poly));
+        }
+        if (north && west) {
+            renderList.add(wrapSouthEast(poly));
+        }
+        if (north && east) {
+            renderList.add(wrapSouthWest(poly));
+        }
+        if (south && west) {
+            renderList.add(wrapNorthEast(poly));
+        }
+        if (south && east) {
+            renderList.add(wrapNorthWest(poly));
+        }
+    }
+
+    private Vector2f getMin(Vector2f[] poly) {
+        Vector2f min = new Vector2f(Float.MAX_VALUE, Float.MAX_VALUE);
+        for (Vector2f v : poly) {
+            min.x = Math.min(v.x, min.x);
+            min.y = Math.min(v.y, min.y);
+        }
+        return min;
+    }
+
+    private Vector2f getMax(Vector2f[] poly) {
+        Vector2f max = new Vector2f(-Float.MAX_VALUE, -Float.MAX_VALUE);
+        for (Vector2f v : poly) {
+            max.x = Math.max(v.x, max.x);
+            max.y = Math.max(v.y, max.y);
+        }
+        return max;
+    }
+
+    private Vector2f[] wrapNorth(Vector2f[] poly) {
+        return Utility.transform(poly, Matrix3x3f.translate(0.0f, worldHeight));
+    }
+
+    private Vector2f[] wrapSouth(Vector2f[] poly) {
+        return Utility.transform(poly, Matrix3x3f.translate(0.0f, -worldHeight));
+    }
+
+    private Vector2f[] wrapEast(Vector2f[] poly) {
+        return Utility.transform(poly, Matrix3x3f.translate(worldWidth, 0.0f));
+    }
+
+    private Vector2f[] wrapWest(Vector2f[] poly) {
+        return Utility.transform(poly, Matrix3x3f.translate(-worldWidth, 0.0f));
+    }
+
+    private Vector2f[] wrapNorthEast(Vector2f[] poly) {
+        return Utility.transform(poly, Matrix3x3f.translate(worldWidth, worldHeight));
+    }
+
+    private Vector2f[] wrapNorthWest(Vector2f[] poly) {
+        return Utility.transform(poly, Matrix3x3f.translate(-worldWidth, worldHeight));
+    }
+
+    private Vector2f[] wrapSouthEast(Vector2f[] poly) {
+        return Utility.transform(poly, Matrix3x3f.translate(worldWidth, -worldHeight));
+    }
+
+    private Vector2f[] wrapSouthWest(Vector2f[] poly) {
+        return Utility.transform(poly, Matrix3x3f.translate(-worldWidth, -worldHeight));
+    }
+}
